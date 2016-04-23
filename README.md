@@ -139,6 +139,8 @@ class Example extends React.Component {
 * [`getSectionSuggestions`](#getSectionSuggestionsProp)
 * [`onSuggestionSelected`](#onSuggestionSelectedProp)
 * [`focusInputOnSuggestionClick`](#focusInputOnSuggestionClickProp)
+* [`shouldHideSuggestions`](#shouldHideSuggestionsProp)
+* [`inputRef`](#inputRefProp)
 * [`theme`](#themeProp)
 * [`id`](#idProp)
 
@@ -411,6 +413,28 @@ You might want to do something like this:
 ```
 
 where `isMobile` is a boolean describing whether Autosuggest operates on a mobile device or not. You can use [kaimallea/isMobile](https://github.com/kaimallea/isMobile), for example, to determine that.
+
+<a name="shouldHideSuggestionsProp"></a>
+#### shouldHideSuggestions (optional)
+
+`shouldHideSuggestions` is called whenever Autosuggest would like to hide the list of suggestions. It has the following signature:
+
+```js
+function shouldHideSuggestions(method)
+```
+
+where `method` is one of the same set of values provided to the `method` parameter in `onChange`. Returning `false` from this method will prevent the list of suggestions from hiding. By default, it always returns `true`. Note that returning an empty array from  `shouldRenderSuggestions` will de facto hide all suggestions regardless of this method's return value.
+
+<a name="inputRefProp"></a>
+#### inputRef (optional)
+
+`inputRef` allows access to the underlying React `ref` that points to the Autosuggest's input field. It has the following signature:
+
+```js
+function inputRef(ref)
+```
+
+where `ref` is the input's DOM element. This method is exactly analogous to passing a function to the `ref` attribute to a React input element.
 
 <a name="themeProp"></a>
 #### theme (optional)
