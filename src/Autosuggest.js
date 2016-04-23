@@ -54,6 +54,7 @@ class Autosuggest extends Component {
     theme: PropTypes.object.isRequired,
     id: PropTypes.string.isRequired,
     inputRef: PropTypes.func.isRequired,
+    shouldHideSuggestions: PropTypes.func.isRequired,
 
     isFocused: PropTypes.bool.isRequired,
     isCollapsed: PropTypes.bool.isRequired,
@@ -179,11 +180,18 @@ class Autosuggest extends Component {
       getSectionSuggestions, focusInputOnSuggestionClick, theme, isFocused,
       isCollapsed, focusedSectionIndex, focusedSuggestionIndex,
       valueBeforeUpDown, inputFocused, inputBlurred, inputChanged,
-      updateFocusedSuggestion, revealSuggestions, closeSuggestions
+      updateFocusedSuggestion, revealSuggestions, closeSuggestions,
+      shouldHideSuggestions
     } = this.props;
     const { value, onBlur, onFocus, onKeyDown } = inputProps;
     const isOpen = isFocused && !isCollapsed && this.willRenderSuggestions();
     const items = (isOpen ? suggestions : []);
+    const maybeCloseSuggestions = (method, cb) => {
+      if (shouldHideSuggestions(method)) {
+        cb(method);
+      }
+    };
+
     const autowhateverInputProps = {
       ...inputProps,
       onFocus: event => {
@@ -196,7 +204,7 @@ class Autosuggest extends Component {
         this.onBlurEvent = event;
 
         if (!this.justClickedOnSuggestion) {
-          inputBlurred();
+          maybeCloseSuggestions('blur', inputBlurred);
           onBlur && onBlur(event);
 
           if (valueBeforeUpDown !== null && value !== valueBeforeUpDown) {
@@ -236,13 +244,13 @@ class Autosuggest extends Component {
             const focusedSuggestion = this.getFocusedSuggestion();
 
             if (focusedSuggestion !== null) {
-              closeSuggestions('enter');
               onSuggestionSelected(event, {
                 suggestion: focusedSuggestion,
                 suggestionValue: value,
                 sectionIndex: focusedSectionIndex,
                 method: 'enter'
               });
+              maybeCloseSuggestions('enter', closeSuggestions);
               this.maybeCallOnSuggestionsUpdateRequested({ value, reason: 'enter' });
             }
             break;
@@ -266,7 +274,7 @@ class Autosuggest extends Component {
               this.maybeCallOnChange(event, valueBeforeUpDown, 'escape');
             }
 
-            closeSuggestions('escape');
+            maybeCloseSuggestions('escape', closeSuggestions);
             break;
         }
 
@@ -295,12 +303,12 @@ class Autosuggest extends Component {
         sectionIndex,
         method: 'click'
       });
-      closeSuggestions('click');
+      maybeCloseSuggestions('click', closeSuggestions);
 
       if (focusInputOnSuggestionClick === true) {
         this.input.focus();
       } else {
-        inputBlurred();
+        maybeCloseSuggestions('blur', inputBlurred);
         onBlur && onBlur(this.onBlurEvent);
       }
 

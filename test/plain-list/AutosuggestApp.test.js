@@ -9,6 +9,7 @@ import {
   expectInputValue,
   getSuggestionsContainer,
   getSuggestion,
+  getInput,
   expectSuggestions,
   expectFocusedSuggestion,
   mouseEnterSuggestion,
@@ -32,7 +33,9 @@ import AutosuggestApp, {
   onBlur,
   shouldRenderSuggestions,
   onSuggestionSelected,
-  onSuggestionsUpdateRequested
+  onSuggestionsUpdateRequested,
+  shouldHideSuggestions,
+  inputRef
 } from './AutosuggestApp';
 
 describe('Plain list Autosuggest', () => {
@@ -86,6 +89,11 @@ describe('Plain list Autosuggest', () => {
       expectSuggestions([]);
     });
 
+    it('should call shouldHideSuggestions when Escape is pressed', () => {
+      clickEscape();
+      expect(shouldHideSuggestions).to.have.been.calledWithExactly('escape');
+    });
+
     it('should not clear the input when Escape is pressed', () => {
       clickEscape();
       expectInputValue('p');
@@ -100,6 +108,11 @@ describe('Plain list Autosuggest', () => {
     it('should hide suggestions when input is blurred', () => {
       blurInput();
       expectSuggestions([]);
+    });
+
+    it('should call shouldHideSuggestions when input is blurred', () => {
+      blurInput();
+      expect(shouldHideSuggestions).to.have.been.calledWithExactly('blur');
     });
 
     it('should show suggestions when input is focused again', () => {
@@ -117,6 +130,11 @@ describe('Plain list Autosuggest', () => {
     it('should update input value when suggestion is clicked', () => {
       clickSuggestion(1);
       expectInputValue('PHP');
+    });
+
+    it('should call shouldHideSuggestions when suggestion is clicked', () => {
+      clickSuggestion(1);
+      expect(shouldHideSuggestions).to.have.been.calledWithExactly('click');
     });
 
     it('should focus on suggestion when mouse enters it', () => {
@@ -424,6 +442,45 @@ describe('Plain list Autosuggest', () => {
     it('should hide suggestions when `false` is returned', () => {
       focusAndSetInputValue(' e');
       expectSuggestions([]);
+    });
+  });
+
+  describe('shouldHideSuggestions', () => {
+    beforeEach(() => {
+      shouldHideSuggestions.reset();
+    });
+
+    describe('when it returns false', () => {
+      beforeEach(() => {
+        shouldHideSuggestions.returns(false);
+        focusAndSetInputValue('p');
+      });
+
+      it('should not hide suggestions when escape is pressed', () => {
+        expectSuggestions(['Perl', 'PHP', 'Python']);
+        clickEscape();
+        clickEscape();
+        expectSuggestions(['Perl', 'PHP', 'Python']);
+      });
+
+      it('should not hide suggestions when enter is pressed', () => {
+        expectSuggestions(['Perl', 'PHP', 'Python']);
+        clickDown();
+        clickEnter();
+        expectSuggestions(['Perl']);
+      });
+
+      it('should not hide suggestions when suggestions are clicked', () => {
+        expectSuggestions(['Perl', 'PHP', 'Python']);
+        clickSuggestion(1);
+        expectSuggestions(['PHP']);
+      });
+    });
+  });
+
+  describe('inputRef', () => {
+    it('should return the input\'s ref', () => {
+      expect(inputRef.lastCall.args[0]).to.equal(getInput());
     });
   });
 

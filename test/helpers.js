@@ -25,6 +25,10 @@ export function init(d) {
   data = d;
 }
 
+export function getInput() {
+  return data.input;
+}
+
 export const eventInstance = sinon.match.instanceOf(SyntheticEvent);
 
 const reactAttributesRegex = / data-react[-\w]+="[^"]+"/g;

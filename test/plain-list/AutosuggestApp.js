@@ -54,6 +54,10 @@ export const onSuggestionsUpdateRequested = sinon.spy(({ value }) => {
   });
 });
 
+export const shouldHideSuggestions = sinon.stub().returns(true);
+
+export const inputRef = sinon.spy();
+
 export default class AutosuggestApp extends Component {
   constructor() {
     super();
@@ -84,7 +88,9 @@ export default class AutosuggestApp extends Component {
                    renderSuggestion={renderSuggestion}
                    inputProps={inputProps}
                    shouldRenderSuggestions={shouldRenderSuggestions}
-                   onSuggestionSelected={onSuggestionSelected} />
+                   shouldHideSuggestions={shouldHideSuggestions}
+                   onSuggestionSelected={onSuggestionSelected}
+                   inputRef={inputRef} />
     );
   }
 }

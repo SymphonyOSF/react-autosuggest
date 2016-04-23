@@ -64,11 +64,13 @@ export default class AutosuggestContainer extends Component {
       }
     },
     shouldRenderSuggestions: PropTypes.func,
+    shouldHideSuggestions: PropTypes.func,
     onSuggestionSelected: PropTypes.func,
     multiSection: PropTypes.bool,
     renderSectionTitle: PropTypes.func,
     getSectionSuggestions: PropTypes.func,
     focusInputOnSuggestionClick: PropTypes.bool,
+    inputRef: PropTypes.func,
     theme: PropTypes.object,
     id: PropTypes.string
   };
@@ -76,6 +78,7 @@ export default class AutosuggestContainer extends Component {
   static defaultProps = {
     onSuggestionsUpdateRequested: noop,
     shouldRenderSuggestions: value => value.trim().length > 0,
+    shouldHideSuggestions: () => true,
     onSuggestionSelected: noop,
     multiSection: false,
     renderSectionTitle() {
@@ -85,6 +88,7 @@ export default class AutosuggestContainer extends Component {
       throw new Error('`getSectionSuggestions` must be provided');
     },
     focusInputOnSuggestionClick: true,
+    inputRef: noop,
     theme: defaultTheme,
     id: '1'
   };
@@ -108,11 +112,12 @@ export default class AutosuggestContainer extends Component {
 
   saveInput(input) {
     this.input = input;
+    this.props.inputRef(input);
   }
 
   render() {
     const {
-      multiSection, shouldRenderSuggestions, suggestions,
+      multiSection, shouldRenderSuggestions, shouldHideSuggestions, suggestions,
       onSuggestionsUpdateRequested, getSuggestionValue, renderSuggestion,
       renderSectionTitle, getSectionSuggestions, inputProps,
       onSuggestionSelected, focusInputOnSuggestionClick, theme, id
@@ -121,6 +126,7 @@ export default class AutosuggestContainer extends Component {
     return (
       <Autosuggest multiSection={multiSection}
                    shouldRenderSuggestions={shouldRenderSuggestions}
+                   shouldHideSuggestions={shouldHideSuggestions}
                    suggestions={suggestions}
                    onSuggestionsUpdateRequested={onSuggestionsUpdateRequested}
                    getSuggestionValue={getSuggestionValue}
