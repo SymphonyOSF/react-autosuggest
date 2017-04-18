@@ -1,6 +1,6 @@
 {
-  "name": "react-autosuggest",
-  "version": "3.7.3-symphony.1",
+  "name": "symphony-react-autosuggest",
+  "version": "3.7.3-symphony.2",
   "description": "WAI-ARIA compliant React autosuggest component",
   "main": "dist/index.js",
   "repository": {
