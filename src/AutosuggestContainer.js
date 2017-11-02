@@ -99,9 +99,6 @@ export default class AutosuggestContainer extends Component {
     const initialState = {
       isFocused: false,
       isCollapsed: true,
-      focusedSectionIndex: null,
-      focusedSuggestionIndex: null,
-      valueBeforeUpDown: null,
       lastAction: null
     };
 
