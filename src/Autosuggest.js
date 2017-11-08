@@ -278,7 +278,7 @@ class Autosuggest extends Component {
             break;
         }
 
-        onKeyDown && onKeyDown(event, data.focusedItemIndex !== null);
+        onKeyDown && onKeyDown(event, data);
       }
     };
     const onMouseEnter = (event, { sectionIndex, itemIndex }) => {
