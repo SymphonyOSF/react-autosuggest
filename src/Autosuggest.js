@@ -289,6 +289,7 @@ class Autosuggest extends Component {
     };
     const onMouseDown = () => {
       this.justClickedOnSuggestion = true;
+      this.updateFocusedSuggestion(null, null);
     };
     const onClick = event => {
       const { sectionIndex, suggestionIndex } =
