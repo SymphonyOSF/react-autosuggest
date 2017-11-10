@@ -182,8 +182,8 @@ class Autosuggest extends Component {
     const { value, onBlur, onFocus, onKeyDown } = inputProps;
     const isOpen = isFocused && !isCollapsed && this.willRenderSuggestions();
     const items = (isOpen ? suggestions : []);
-    const maybeCloseSuggestions = (method, cb) => {
-      if (shouldHideSuggestions(method)) {
+    const maybeCloseSuggestions = (method, cb, shouldCloseSuggestions) => {
+      if (shouldHideSuggestions(method) && (shouldCloseSuggestions === undefined || shouldCloseSuggestions) && (shouldCloseSuggestions !== undefined && shouldCloseSuggestions)) {
         cb(method);
       }
     };
@@ -200,7 +200,7 @@ class Autosuggest extends Component {
         this.onBlurEvent = event;
 
         if (!this.justClickedOnSuggestion) {
-          maybeCloseSuggestions('blur', inputBlurred);
+          maybeCloseSuggestions('blur', inputBlurred, true);
           this.updateFocusedSuggestion(null, null, null);
           onBlur && onBlur(event);
 
@@ -248,7 +248,7 @@ class Autosuggest extends Component {
                 sectionIndex: focusedSectionIndex,
                 method: 'enter'
               });
-              maybeCloseSuggestions('enter', closeSuggestions);
+              maybeCloseSuggestions('enter', closeSuggestions, focusedSuggestion.shouldCloseSuggestions);
               this.maybeCallOnSuggestionsUpdateRequested({ value, reason: 'enter' });
 
               this.updateFocusedSuggestion(null, null);
@@ -274,7 +274,7 @@ class Autosuggest extends Component {
               this.maybeCallOnChange(event, valueBeforeUpDown, 'escape');
             }
 
-            maybeCloseSuggestions('escape', closeSuggestions);
+            maybeCloseSuggestions('escape', closeSuggestions, true);
             break;
         }
 
@@ -289,6 +289,7 @@ class Autosuggest extends Component {
     };
     const onMouseDown = () => {
       this.justClickedOnSuggestion = true;
+      this.updateFocusedSuggestion(null, null);
     };
     const onClick = event => {
       const { sectionIndex, suggestionIndex } =
@@ -303,12 +304,12 @@ class Autosuggest extends Component {
         sectionIndex,
         method: 'click'
       });
-      maybeCloseSuggestions('click', closeSuggestions);
+      maybeCloseSuggestions('click', closeSuggestions, clickedSuggestion.shouldCloseSuggestions);
 
       if (focusInputOnSuggestionClick === true) {
         this.input.focus();
       } else {
-        maybeCloseSuggestions('blur', inputBlurred);
+        maybeCloseSuggestions('blur', inputBlurred, true);
         this.updateFocusedSuggestion(null, null, null);
         onBlur && onBlur(this.onBlurEvent);
       }
