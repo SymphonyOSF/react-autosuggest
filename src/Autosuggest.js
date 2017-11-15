@@ -183,7 +183,14 @@ class Autosuggest extends Component {
     const isOpen = isFocused && !isCollapsed && this.willRenderSuggestions();
     const items = (isOpen ? suggestions : []);
     const maybeCloseSuggestions = (method, cb, shouldCloseSuggestions) => {
-      if (shouldHideSuggestions(method) && (shouldCloseSuggestions === undefined || shouldCloseSuggestions) && (shouldCloseSuggestions !== undefined && shouldCloseSuggestions)) {
+      var isValid = false;
+      if (shouldHideSuggestions(method) && (shouldCloseSuggestions === undefined || shouldCloseSuggestions)) {
+        isValid = true;
+      }
+      if (shouldHideSuggestions(method) && shouldCloseSuggestions !== undefined && shouldCloseSuggestions) {
+        isValid = true;
+      }
+      if (isValid) {
         cb(method);
       }
     };
