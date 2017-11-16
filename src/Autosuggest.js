@@ -184,6 +184,7 @@ class Autosuggest extends Component {
     const items = (isOpen ? suggestions : []);
     const maybeCloseSuggestions = (method, cb, shouldCloseSuggestions) => {
       var isValid = false;
+
       if (shouldHideSuggestions(method) && (shouldCloseSuggestions === undefined || shouldCloseSuggestions)) {
         isValid = true;
       }
@@ -239,7 +240,20 @@ class Autosuggest extends Component {
                 valueBeforeUpDown :
                 this.getSuggestionValueByIndex(newFocusedSectionIndex, newFocusedItemIndex);
 
-              this.updateFocusedSuggestion(newFocusedSectionIndex, newFocusedItemIndex, value);
+              var updatedFocusedItemIndex = newFocusedItemIndex,
+                updatedFocusedSectionIndex = newFocusedSectionIndex;
+
+              if (newFocusedSectionIndex === 0 && newFocusedItemIndex === 0) {
+                if (event.key === 'ArrowDown') {
+                  updatedFocusedItemIndex = 1;
+                  updatedFocusedSectionIndex = 0;
+                }
+                if (event.key === 'ArrowUp') {
+                  updatedFocusedItemIndex = null;
+                  updatedFocusedSectionIndex = null;
+                }
+              }
+              this.updateFocusedSuggestion(updatedFocusedSectionIndex, updatedFocusedItemIndex, value);
               this.maybeCallOnChange(event, newValue, event.key === 'ArrowDown' ? 'down' : 'up');
             }
             event.preventDefault();
