@@ -243,7 +243,7 @@ class Autosuggest extends Component {
               var updatedFocusedItemIndex = newFocusedItemIndex,
                 updatedFocusedSectionIndex = newFocusedSectionIndex;
 
-              if (newFocusedSectionIndex === 0 && newFocusedItemIndex === 0) {
+              if (this.props.id === 'header-search' && newFocusedSectionIndex === 0 && newFocusedItemIndex === 0) {
                 if (event.key === 'ArrowDown') {
                   updatedFocusedItemIndex = 1;
                   updatedFocusedSectionIndex = 0;
