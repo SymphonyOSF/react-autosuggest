@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { inputFocused, inputBlurred, inputChanged,
-         revealSuggestions, closeSuggestions } from './reducerAndActions';
+  revealSuggestions, closeSuggestions } from './reducerAndActions';
 import Autowhatever from 'react-autowhatever';
 
 function mapStateToProps(state) {
@@ -77,11 +77,11 @@ class Autosuggest extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.suggestions !== this.props.suggestions) {
       const { suggestions, inputProps, shouldRenderSuggestions,
-              isCollapsed, revealSuggestions, lastAction } = nextProps;
+        isCollapsed, revealSuggestions, lastAction } = nextProps;
       const { value } = inputProps;
 
       if (isCollapsed && lastAction !== 'click' && lastAction !== 'enter' &&
-          suggestions.length > 0 && shouldRenderSuggestions(value)) {
+        suggestions.length > 0 && shouldRenderSuggestions(value)) {
         revealSuggestions();
       }
     }
@@ -243,14 +243,28 @@ class Autosuggest extends Component {
               var updatedFocusedItemIndex = newFocusedItemIndex,
                 updatedFocusedSectionIndex = newFocusedSectionIndex;
 
-              if (this.props.id === 'header-search' && newFocusedSectionIndex === 0 && newFocusedItemIndex === 0) {
-                if (event.key === 'ArrowDown') {
-                  updatedFocusedItemIndex = 1;
-                  updatedFocusedSectionIndex = 0;
-                }
-                if (event.key === 'ArrowUp') {
-                  updatedFocusedItemIndex = null;
-                  updatedFocusedSectionIndex = null;
+              if (updatedFocusedItemIndex !== null && updatedFocusedSectionIndex !== null) {
+                var shouldFocusSuggestion = this.props.suggestions[updatedFocusedSectionIndex].items[updatedFocusedItemIndex].shouldFocusSuggestion;
+
+                /* Focus a suggestion only if it is required to
+                 * be. For certain section headers, skip focus.
+                 * See SEARCH-577
+                 */
+                if ((shouldFocusSuggestion !== undefined && shouldFocusSuggestion !== null) && !shouldFocusSuggestion) {
+                  if (event.key === 'ArrowDown') {
+                    // Update the focus to the item below the current one on arrow down
+                    updatedFocusedItemIndex += 1;
+                  }
+                  if (event.key === 'ArrowUp') {
+                    // Update the focus to the the item above the current one on arrow up only if it's not the first item
+                    if (updatedFocusedSectionIndex > 0) {
+                      updatedFocusedSectionIndex -= 1;
+                      updatedFocusedItemIndex = this.props.suggestions[updatedFocusedSectionIndex].items.length - 1;
+                    } else {
+                      updatedFocusedSectionIndex = null;
+                      updatedFocusedItemIndex = null;
+                    }
+                  }
                 }
               }
               this.updateFocusedSuggestion(updatedFocusedSectionIndex, updatedFocusedItemIndex, value);
@@ -303,7 +317,17 @@ class Autosuggest extends Component {
       }
     };
     const onMouseEnter = (event, { sectionIndex, itemIndex }) => {
-      this.updateFocusedSuggestion(sectionIndex, itemIndex);
+      const shouldFocusSuggestion = this.props.suggestions[sectionIndex].items[itemIndex].shouldFocusSuggestion;
+
+      let updatedSectionIndex = sectionIndex;
+      let updatedItemIndex = itemIndex;
+
+      if ((shouldFocusSuggestion !== undefined && shouldFocusSuggestion !== null) && !shouldFocusSuggestion) {
+        updatedSectionIndex = null;
+        updatedItemIndex = null;
+      }
+
+      this.updateFocusedSuggestion(updatedSectionIndex, updatedItemIndex);
     };
     const onMouseLeave = () => {
       this.updateFocusedSuggestion(null, null);
