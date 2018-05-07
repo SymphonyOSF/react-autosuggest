@@ -291,6 +291,11 @@ class Autosuggest extends Component {
             break;
           }
 
+          case 'Tab': {
+            this.updateFocusedSuggestion(null, null);
+            break;
+          }
+
           case 'Escape':
             if (isOpen) {
               // If input.type === 'search', the browser clears the input
