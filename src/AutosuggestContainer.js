@@ -71,6 +71,7 @@ export default class AutosuggestContainer extends Component {
     getSectionSuggestions: PropTypes.func,
     focusInputOnSuggestionClick: PropTypes.bool,
     inputRef: PropTypes.func,
+    componentRef: PropTypes.func,
     theme: PropTypes.object,
     id: PropTypes.string
   };
@@ -89,6 +90,7 @@ export default class AutosuggestContainer extends Component {
     },
     focusInputOnSuggestionClick: true,
     inputRef: noop,
+    componentRef: noop,
     theme: defaultTheme,
     id: '1'
   };
@@ -136,7 +138,8 @@ export default class AutosuggestContainer extends Component {
                    theme={mapToAutowhateverTheme(theme)}
                    id={id}
                    inputRef={this.saveInput}
-                   store={this.store} />
+                   store={this.store}
+                   ref={this.props.componentRef} />
     );
   }
 }

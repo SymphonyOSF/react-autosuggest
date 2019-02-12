@@ -404,4 +404,4 @@ class Autosuggest extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Autosuggest);
+export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(Autosuggest);
