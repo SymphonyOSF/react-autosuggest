@@ -227,6 +227,7 @@ class Autosuggest extends Component {
         this.maybeCallOnSuggestionsUpdateRequested({ value, reason: 'type' });
       },
       onKeyDown: (event, data) => {
+        var sectionType = null;
         switch (event.key) {
           case 'ArrowDown':
           case 'ArrowUp':
@@ -245,6 +246,7 @@ class Autosuggest extends Component {
 
               if (updatedFocusedItemIndex !== null && updatedFocusedSectionIndex !== null) {
                 var shouldFocusSuggestion = this.props.suggestions[updatedFocusedSectionIndex].items[updatedFocusedItemIndex].shouldFocusSuggestion;
+                sectionType = this.props.suggestions[updatedFocusedSectionIndex].type;
 
                 /* Focus a suggestion only if it is required to
                  * be. For certain section headers, skip focus.
@@ -318,7 +320,7 @@ class Autosuggest extends Component {
             break;
         }
 
-        onKeyDown && onKeyDown(event, data);
+        onKeyDown && onKeyDown(event, data, sectionType);
       }
     };
     const onMouseEnter = (event, { sectionIndex, itemIndex }) => {
