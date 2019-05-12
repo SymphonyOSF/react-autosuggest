@@ -50,6 +50,7 @@ class Autosuggest extends Component {
     id: PropTypes.string.isRequired,
     inputRef: PropTypes.func.isRequired,
     shouldHideSuggestions: PropTypes.func.isRequired,
+    getDescriptionId: PropTypes.func.isRequired,
 
     isFocused: PropTypes.bool.isRequired,
     isCollapsed: PropTypes.bool.isRequired,
@@ -176,7 +177,7 @@ class Autosuggest extends Component {
       onSuggestionSelected, multiSection, renderSectionTitle, id,
       getSectionSuggestions, focusInputOnSuggestionClick, theme, isFocused,
       isCollapsed, inputFocused, inputBlurred, inputChanged,
-      revealSuggestions, closeSuggestions, shouldHideSuggestions
+      revealSuggestions, closeSuggestions, shouldHideSuggestions, getDescriptionId
     } = this.props;
     const { focusedSectionIndex, focusedSuggestionIndex, valueBeforeUpDown } = this.state;
     const { value, onBlur, onFocus, onKeyDown } = inputProps;
@@ -374,6 +375,7 @@ class Autosuggest extends Component {
     };
     const itemProps = ({ sectionIndex, itemIndex }) => {
       return {
+        'aria-describedby': getDescriptionId(sectionIndex, itemIndex),
         'data-section-index': sectionIndex,
         'data-suggestion-index': itemIndex,
         onMouseEnter,
